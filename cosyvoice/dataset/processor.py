@@ -21,6 +21,9 @@ import torchaudio
 from torch.nn.utils.rnn import pad_sequence
 import torch.nn.functional as F
 import pyworld as pw
+import json
+import random
+import os
 
 
 AUDIO_FORMAT_SETS = {'flac', 'mp3', 'm4a', 'ogg', 'opus', 'wav', 'wma'}
@@ -55,6 +58,57 @@ def parquet_opener(data, mode='train', tts_data={}):
         except Exception as ex:
             logging.warning('Failed to open {}, ex info {}'.format(url, ex))
 
+def generate_instructions(data, instruct_file=None, rand=3, mode='train'):
+    with open(instruct_file, 'r') as f:
+        utt2templates = json.load(f)
+        
+    for sample in data:
+        assert 'text' in sample
+        assert 'utt' in sample
+        # print(sample.keys())
+
+        if random.random() <= 0.05: # sample has a 5% chance of not receiving an instruction
+            print("NO INSTRUCTION")
+            yield sample
+            continue
+        
+        utt = os.path.join(sample['utt'].strip().split("_")[0], f"{sample['utt'].strip()}.wav")
+        templates = utt2templates[utt]
+        keys = list(templates.keys())
+        while True:
+            # select a random number of keys between 1 and rand
+            n = random.randint(1, rand)
+            # print(n)
+            selected_keys = random.sample(keys, n) # select n random keys
+            if _is_valid_selection(templates, selected_keys):
+                break
+    
+        selected_templates = {key: random.choice(templates[key]) for key in selected_keys} # randomly select one template for each key
+        # Create a string that joins all values of selected_templates with "and"
+        instruction = " and ".join([str(value) for value in selected_templates.values()])
+
+        sample['text'] = "<|en|>" +  instruction + " <endofprompt> <|de|>" + sample['text'] 
+        yield sample
+
+
+def _is_valid_selection(templates, selected_keys):
+    if ('shimmer' in selected_keys and len(templates['shimmer']) > 1) and ('jitter' in selected_keys and len(templates['jitter']) > 1):
+        # print("jitter and shimmer both too long")
+        return False
+    elif ('shimmer' in selected_keys and len(templates['shimmer']) > 1) and 'pitch_var' in selected_keys:
+        # print("shimmer too long and pitch_var")
+        return False
+    elif ('jitter' in selected_keys and len(templates['jitter']) > 1) and 'pitch_var' in selected_keys:
+        # print("jitter too long and pitch_var")          
+        return False
+    else:
+        return True
+
+def add_lid_token(data, language, mode='train'):
+    for sample in data:
+        assert 'text' in sample
+        sample['text'] = f"<|{language}|>" + sample['text']
+        yield sample
 
 def filter(data,
            max_length=10240,

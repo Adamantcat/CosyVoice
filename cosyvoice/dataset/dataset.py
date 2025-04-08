@@ -22,6 +22,7 @@ import torch
 import torch.distributed as dist
 from torch.utils.data import IterableDataset
 from cosyvoice.utils.file_utils import read_lists, read_json_lists
+from tools.make_instructions import make_instructions
 
 
 class Processor(IterableDataset):
@@ -149,7 +150,7 @@ def Dataset(data_list_file,
             tts_data = json.load(f)
         utt2lists = read_json_lists(prompt_utt2data)
         # filter unnecessary file in inference mode
-        lists = list({utt2lists[utt] for utt in tts_data.keys() if utt2lists[utt] in lists})
+        lists = list({utt2lists[utt] for utt in tts_data.keys() if utt2lists[utt] in lists})    
     dataset = DataList(lists,
                        shuffle=shuffle,
                        partition=partition)
