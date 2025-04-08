@@ -13,7 +13,7 @@
 # limitations under the License.
 import torch
 import torch.nn as nn
-try: #training
+try:
     from torch.nn.utils.parametrizations import weight_norm
 except ImportError:
     from torch.nn.utils import weight_norm

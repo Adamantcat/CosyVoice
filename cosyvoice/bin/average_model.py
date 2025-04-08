@@ -85,16 +85,11 @@ def main():
         print('Processing {}'.format(path))
         states = torch.load(path, map_location=torch.device('cpu'))
         for k in states.keys():
-            if k not in avg.keys():
-                if k == 'epoch' or k == 'step':
-                    continue
-                elif type(states[k] == 'int'):
-                    # print("WARNING: FOUND INT THAT CANNOT BE CLONED ", k)
-                    avg[k] = states[k]
-                else:
+            if k not in ['step', 'epoch']:
+                if k not in avg.keys():
                     avg[k] = states[k].clone()
-            else:
-                avg[k] += states[k]
+                else:
+                    avg[k] += states[k]
     # average
     for k in avg.keys():
         if avg[k] is not None:

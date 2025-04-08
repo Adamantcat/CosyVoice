@@ -23,7 +23,7 @@ import torch.nn.functional as F
 from torch.nn import Conv1d
 from torch.nn import ConvTranspose1d
 from torch.nn.utils import remove_weight_norm
-try: #training
+try:
     from torch.nn.utils.parametrizations import weight_norm
 except ImportError:
     from torch.nn.utils import weight_norm
