@@ -50,3 +50,11 @@ pretrained_models/*
 *_pb2_grpc.py
 *_pb2.py
 *.tar
+
+*.yaml
+*.pt
+*.json
+*.out
+*.log
+*.list
+*.scp
