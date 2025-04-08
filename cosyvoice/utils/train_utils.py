@@ -52,7 +52,7 @@ def init_distributed(args):
 
 def init_dataset_and_dataloader(args, configs, gan):
     data_pipeline = configs['data_pipeline_gan'] if gan is True else configs['data_pipeline']
-    train_dataset = Dataset(args.train_data, data_pipeline=data_pipeline, mode='train', gan=gan, shuffle=True, partition=True)
+    train_dataset = Dataset(args.train_data, data_pipeline=data_pipeline, mode='train', gan=gan, shuffle=True, partition=False)
     cv_dataset = Dataset(args.cv_data, data_pipeline=data_pipeline, mode='train', gan=gan, shuffle=False, partition=False)
 
     # do not use persistent_workers=True, as whisper tokenizer opens tiktoken file each time when the for loop starts
@@ -68,6 +68,15 @@ def init_dataset_and_dataloader(args, configs, gan):
                                 prefetch_factor=args.prefetch)
     return train_dataset, cv_dataset, train_data_loader, cv_data_loader
 
+def reinit_dataset_and_dataloader(data, args, configs, gan):
+    data_pipeline = configs['data_pipeline_instruct']
+    dataset = Dataset(data, data_pipeline=data_pipeline, mode='train', gan=gan, shuffle=True, partition=True)
+    data_loader = DataLoader(dataset,
+                                   batch_size=None,
+                                   pin_memory=args.pin_memory,
+                                   num_workers=args.num_workers,
+                                   prefetch_factor=args.prefetch)
+    return dataset, data_loader
 
 def check_modify_and_save_config(args, configs):
     if args.train_engine == "torch_ddp":

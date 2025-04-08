@@ -39,6 +39,7 @@ def read_json_lists(list_file):
 
 
 def load_wav(wav, target_sr):
+    torchaudio.set_audio_backend('soundfile')
     speech, sample_rate = torchaudio.load(wav, backend='soundfile')
     speech = speech.mean(dim=0, keepdim=True)
     if sample_rate != target_sr:
