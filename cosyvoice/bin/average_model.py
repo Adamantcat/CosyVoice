@@ -67,6 +67,16 @@ def main():
             args.src_path + '/epoch_{}_whole.pt'.format(score[0])
             for score in sorted_val_scores[:args.num]
         ]
+    else: # average last n checkpoints
+        checkpoints = glob.glob('{}/*.pt'.format(args.src_path))
+        checkpoints = [
+            f for f in checkpoints
+            if not (os.path.basename(f).startswith('train')
+                    or os.path.basename(f).startswith('init') or 'epoch' not in os.path.basename(f))
+        ]
+        checkpoints = sorted(checkpoints, key=lambda x: int(os.path.basename(x).split('_')[1]), reverse=True)
+        path_list = checkpoints[:args.num]
+
     print(path_list)
     avg = {}
     num = args.num
@@ -76,7 +86,13 @@ def main():
         states = torch.load(path, map_location=torch.device('cpu'))
         for k in states.keys():
             if k not in avg.keys():
-                avg[k] = states[k].clone()
+                if k == 'epoch' or k == 'step':
+                    continue
+                elif type(states[k] == 'int'):
+                    # print("WARNING: FOUND INT THAT CANNOT BE CLONED ", k)
+                    avg[k] = states[k]
+                else:
+                    avg[k] = states[k].clone()
             else:
                 avg[k] += states[k]
     # average
