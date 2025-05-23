@@ -6,7 +6,36 @@ import torchaudio
 import sys
 
 
+cosyvoice2 = CosyVoice2('pretrained_models/CosyVoice2-0.5B', load_jit=False, load_trt=False, fp16=False)
+prompt_speech_16k = load_wav('./asset/zero_shot_prompt.wav', 16000)
 
+for i, j in enumerate(cosyvoice2.inference_instruct2('The sun was just beginning to rise over the mountains.', 'a woman', prompt_speech_16k, stream=False)):
+    torchaudio.save('audios/cosyvoice2/instruct_female.wav'.format(i), j['tts_speech'], cosyvoice2.sample_rate)
+
+for i, j in enumerate(cosyvoice2.inference_instruct2('The sun was just beginning to rise over the mountains.', 'a man', prompt_speech_16k, stream=False)):
+    torchaudio.save('audios/cosyvoice2/instruct_male.wav'.format(i), j['tts_speech'], cosyvoice2.sample_rate)
+    
+sys.exit(0) 
+
+cosyvoice = CosyVoice('pretrained_models/CosyVoice-300M-Instruct')
+
+for i, j in enumerate(cosyvoice.inference_instruct('The sun was just beginning to rise over the mountains.', '中文男' ,'A woman.', stream=False)):
+    torchaudio.save('audios/cosyvoice/test/female_1.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+
+for i, j in enumerate(cosyvoice.inference_instruct('The sun was just beginning to rise over the mountains.', '中文男' ,'A man.', stream=False)):
+    torchaudio.save('audios/cosyvoice/test/male_1.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+
+for i, j in enumerate(cosyvoice.inference_instruct('She carefully placed the book back on the shelf.', '中文男' ,'speaker is female', stream=False)):
+    torchaudio.save('audios/cosyvoice/test/female_2.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+
+for i, j in enumerate(cosyvoice.inference_instruct('She carefully placed the book back on the shelf.', '中文男' ,'speaker is male', stream=False)):
+    torchaudio.save('audios/cosyvoice/test/male_2.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+
+
+
+
+
+sys.exit(0)
 # cosyvoice = CosyVoice('pretrained_models/CosyVoice-300M-Instruct_poetry')
 
 # for i, j in enumerate(cosyvoice.inference_instruct('All that is gold does not glitter Not all those who wander are lost The old that is strong does not wither Deep roots are not reached by the frost.', '中文男' ,'A female speaker with normal pitch and normal speaking rate.', stream=False)):
@@ -24,34 +53,36 @@ import sys
 
 # sys.exit(0)
 
-
+cosyvoice = CosyVoice('pretrained_models/CosyVoice-300M-Instruct_poetry')
 # instruct usage, support <laughter></laughter><strong></strong>[laughter][breath]
-# for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'the speaker is male and speaker appears to be in a bad mood and has high arousal.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/vergissmeinnicht_best_1.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'the speaker is female.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/vergissmeinnicht_0.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+sys.exit(0)
+for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'the speaker is male and has high arousal and appears to be in a bad mood.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/vergissmeinnicht_1.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'the speaker is male and has high valence and has high arousal.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/vergissmeinnicht_best_2.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'the speaker is male and has high arousal and appears to be in a good mood.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/vergissmeinnicht_2.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'a woman is speaking and sound pressure is elevated.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/vergissmeinnicht_best_3.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'a woman is speaking and sound pressure is elevated.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/vergissmeinnicht_3.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'a woman is speaking and is almost silent.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/vergissmeinnicht_best_4.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'a woman is speaking and is almost silent.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/vergissmeinnicht_4.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a high pitch variance and speaker is calm and has low dominance.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/Blatt_best_1.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a high pitch variance and speaker is calm and has low dominance.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/Blatt_1.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a low pitch variance and speaker is calm and has high dominance.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/Blatt_best_2.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a low pitch variance and speaker is calm and has high dominance.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/Blatt_2.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a high jitter.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/Blatt_best_3.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a high jitter.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/Blatt_3.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a low jitter.', stream=False)):
-#     torchaudio.save('audios/cosyvoice/instruct_rand_mixed/Blatt_best_4.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+for i, j in enumerate(cosyvoice.inference_instruct('Schicke mir ein Blatt, doch von einem Strauche Der nicht näher als eine halbe Stunde Von deinem Haus wächst, dann Mußt du gehen und wirst stark, und ich bedanke mich für das hübsche Blatt.', '中文男' ,'has a low jitter.', stream=False)):
+    torchaudio.save('audios/cosyvoice/hui_instruct_v2/Blatt_4.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
 
-# sys.exit(0)
 # for i, j in enumerate(cosyvoice.inference_instruct('Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'has low valence', stream=False)):
 #     torchaudio.save('audios/cosyvoice/instruct/vergissmeinnicht_5.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
@@ -71,11 +102,11 @@ import sys
 # for i, j in enumerate(cosyvoice.inference_instruct('<|de|> Es blüht ein schönes Blümchen auf unsrer grünen Au. Sein Aug ist wie der Himmel, so heiter und so blau.', '中文男' ,'a woman is speaking and has a low equivalent sound level.', stream=False)):
 #     torchaudio.save('audios/cosyvoice/instruct_simple/vergissmeinnicht_4.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-# sys.exit(0)
+sys.exit(0)
 
 
 
-cosyvoice = CosyVoice('pretrained_models/CosyVoice-300M_poetry') # or change to pretrained_models/CosyVoice-300M-25Hz for 25Hz inference
+cosyvoice = CosyVoice('pretrained_models/CosyVoice-300M_poetry', load_jit=False, load_trt=False, fp16=False) # or change to pretrained_models/CosyVoice-300M-25Hz for 25Hz inference
 # print(cosyvoice.list_available_spks())
 # zero_shot usage, <|zh|><|en|><|jp|><|yue|><|ko|> for Chinese/English/Japanese/Cantonese/Korean
 prompt_speech_16k_zero_shot = load_wav('./asset/zero_shot_prompt.wav', 16000)

@@ -22,7 +22,6 @@ import torch
 import torch.distributed as dist
 from torch.utils.data import IterableDataset
 from cosyvoice.utils.file_utils import read_lists, read_json_lists
-from tools.make_instructions import make_instructions
 
 
 class Processor(IterableDataset):

@@ -20,14 +20,15 @@ def make_instructions(utt2templates, utt, rand=5):
     templates = utt2templates[utt]
     keys = list(templates.keys())
 
-    while True:
-        # select a random number of keys between 1 and rand
-        n = random.randint(1, rand)
-        # print(n)
-        selected_keys = random.sample(keys, n) # select n random keys
-        if is_valid_selection(templates, selected_keys):
-            break
-    
+    # while True:
+    #     # select a random number of keys between 1 and rand
+    #     n = random.randint(1, rand)
+    #     # print(n)
+    #     selected_keys = random.sample(keys, n) # select n random keys
+    #     # if is_valid_selection(templates, selected_keys):
+    #     #     break
+    n = random.randint(1, rand)
+    selected_keys = random.sample(keys, n) # select n random keys
     selected_templates = {key: random.choice(templates[key]) for key in selected_keys} # randomly select one template for each key
     # Create a string that joins all values of selected_templates with "and"
     instruction = " and ".join([str(value) for value in selected_templates.values()])

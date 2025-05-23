@@ -61,27 +61,29 @@ def parquet_opener(data, mode='train', tts_data={}):
 def generate_instructions(data, instruct_file=None, rand=3, mode='train'):
     with open(instruct_file, 'r') as f:
         utt2templates = json.load(f)
-        
+
     for sample in data:
+        # print(sample)
         assert 'text' in sample
         assert 'utt' in sample
+        assert 'wav' in sample
         # print(sample.keys())
 
-        if random.random() <= 0.05: # sample has a 5% chance of not receiving an instruction
-            print("NO INSTRUCTION")
-            yield sample
-            continue
+        # if random.random() <= 0.05: # sample has a 5% chance of not receiving an instruction
+        #     print("NO INSTRUCTION")
+        #     yield sample
+        #     continue
         
-        utt = os.path.join(sample['utt'].strip().split("_")[0], f"{sample['utt'].strip()}.wav")
-        templates = utt2templates[utt]
+        # utt = os.path.join(sample['utt'].strip().split("_")[0], f"{sample['utt'].strip()}.wav")
+        templates = utt2templates[sample['wav']]
         keys = list(templates.keys())
-        while True:
+        # while True:
             # select a random number of keys between 1 and rand
-            n = random.randint(1, rand)
+        n = random.randint(1, rand)
             # print(n)
-            selected_keys = random.sample(keys, n) # select n random keys
-            if _is_valid_selection(templates, selected_keys):
-                break
+        selected_keys = random.sample(keys, n) # select n random keys
+            # if _is_valid_selection(templates, selected_keys):
+            #     break
     
         selected_templates = {key: random.choice(templates[key]) for key in selected_keys} # randomly select one template for each key
         # Create a string that joins all values of selected_templates with "and"

@@ -70,7 +70,7 @@ def init_dataset_and_dataloader(args, configs, gan):
 
 def reinit_dataset_and_dataloader(data, args, configs, gan):
     data_pipeline = configs['data_pipeline_instruct']
-    dataset = Dataset(data, data_pipeline=data_pipeline, mode='train', gan=gan, shuffle=True, partition=True)
+    dataset = Dataset(data, data_pipeline=data_pipeline, mode='train', gan=gan, shuffle=True, partition=False)
     data_loader = DataLoader(dataset,
                                    batch_size=None,
                                    pin_memory=args.pin_memory,

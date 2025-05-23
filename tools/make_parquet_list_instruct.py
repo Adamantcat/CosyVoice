@@ -84,7 +84,8 @@ if __name__ == "__main__":
     with open('{}/text'.format(args.src_dir)) as f:
         for l in f:
             l = l.replace('\n', '').split()
-            instruction = make_instructions_simple(utt2templates, os.path.join(l[0].split("_")[0], f"{l[0]}.wav"))
+            # instruction = make_instructions(utt2templates, os.path.join(l[0].split("_")[0], f"{l[0]}.wav")) # for poetry
+            instruction = make_instructions(utt2templates, utt2wav[l[0]]) # for hui
             text = ' '.join(l[1:])
             text_with_instruction = "<|en|>" +  instruction + " <endofprompt> <|de|>" + text
             utt2text[l[0]] = text_with_instruction

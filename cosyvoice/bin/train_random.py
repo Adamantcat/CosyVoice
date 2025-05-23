@@ -163,8 +163,8 @@ def main():
 
         start_time = time.perf_counter()
 
-        if epoch > 0: #train first epoch without instructions
-            train_dataset, train_data_loader = reinit_dataset_and_dataloader(args.train_data, args, configs, gan)
+        # if epoch > 0: #train first epoch without instructions
+        train_dataset, train_data_loader = reinit_dataset_and_dataloader(args.train_data, args, configs, gan)
 
         # Count the number of datapoints in train_dataset
         num_datapoints = 0

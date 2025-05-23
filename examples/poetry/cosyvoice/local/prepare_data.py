@@ -13,13 +13,18 @@ def main():
 
     # Load JSON file as pandas dataframe
     data_df = pd.read_json(args.data_json)
+    split = args.split
 
     wavs = []
-    for root, _, files in os.walk(args.src_dir):
-        for file in files:
-            if file.endswith('.wav'):
-                wavs.append(os.path.join(root, file))
+    with open(split, "r") as f:
+        for line in f:
+            wavs.append(line.strip())
     # print(wavs)
+    # for root, _, files in os.walk(args.src_dir):
+    #     for file in files:
+    #         if file.endswith('.wav'):
+    #             wavs.append(os.path.join(root, file))
+    # # print(wavs)
 
     if not os.path.exists(args.des_dir):
         os.makedirs(args.des_dir)
@@ -31,7 +36,7 @@ def main():
         file_name = row['lccn'] + "_" + str(row['strophe']) + ".wav"
         file_path = os.path.join(args.src_dir, row['lccn'], file_name)
 
-        if file_path in wavs:
+        if file_name in wavs:
             # utt = file_path.split(".")[0]
             utt = row['lccn'] + "_" + str(row['strophe'])
             spk = row['performer'].strip().replace(", ", "_").replace(" ", "")
@@ -64,6 +69,8 @@ if __name__ == "__main__":
     parser.add_argument('--des_dir',
                         type=str)
     parser.add_argument('--data_json', 
+                        type=str)
+    parser.add_argument('--split',
                         type=str)
     args = parser.parse_args()
     main()
