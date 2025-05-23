@@ -58,3 +58,4 @@ pretrained_models/*
 *.log
 *.list
 *.scp
+*.txt
